@@ -1,0 +1,78 @@
+[
+  {
+    "model": "shop.category",
+    "pk": 1,
+    "fields": {
+      "name": "Класичні кактуси",
+      "slug": "classic-cacti",
+      "description": "Маленькі кактуси для підвіконня та столу.",
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.category",
+    "pk": 2,
+    "fields": {
+      "name": "Рідкісні кактуси",
+      "slug": "rare-cacti",
+      "description": "Екзотичні види для справжніх колекціонерів.",
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 1,
+    "fields": {
+      "category": 1,
+      "name": "Малютка Ехінопсис",
+      "price": "199.99",
+      "stock": 12,
+      "description": "Компактний кактус з ніжними квітами.",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 2,
+    "fields": {
+      "category": 2,
+      "name": "Орхідея кактус",
+      "price": "499.50",
+      "stock": 5,
+      "description": "Рідкісний колір та незвичайна форма.",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.customer",
+    "pk": 1,
+    "fields": {
+      "first_name": "Аня",
+      "last_name": "Семенова",
+      "email": "anya@example.com",
+      "phone": "+380671234567",
+      "favorite_category": 2,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.customer",
+    "pk": 2,
+    "fields": {
+      "first_name": "Максим",
+      "last_name": "Кузьменко",
+      "email": "maksym@example.com",
+      "phone": "+380981234567",
+      "favorite_category": 1,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  }
+]
