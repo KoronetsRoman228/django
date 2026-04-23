@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+
+    {% if is_main %}
+        <ul>
+            {% for page in pages %}
+                <li><a href="{{ page.path }}">{{ page.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p><a href="/">Повернутись на головну</a></p>
+    {% endif %}
+</body>
+</html>
