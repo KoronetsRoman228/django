@@ -1,22 +1,96 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}{{ product.name }} - {{ block.super }}{% endblock %}
+{% block title %}{{ product.name }} — КактусShop{% endblock %}
 
 {% block content %}
-    <div class="product-detail">
-        <h1>{{ product.name }}</h1>
-        {% if product.image_url %}
-            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
-        {% endif %}
-        <p>{{ product.description }}</p>
-        <p class="price">Ціна: {{ product.price }} грн</p>
-        <p>Кількість на складі: {{ product.stock }}</p>
-        <p>Категорія: <a href="{% url 'shop:category' product.category.slug %}">{{ product.category.name }}</a></p>
-        {% if product.available %}
-            <p class="available">В наявності</p>
+
+<div class="breadcrumb">
+    <a href="{% url 'shop:main' %}">Головна</a>
+    <span class="breadcrumb__sep">/</span>
+    <a href="{% url 'shop:category' product.category.slug %}">{{ product.category.name }}</a>
+    <span class="breadcrumb__sep">/</span>
+    <span>{{ product.name }}</span>
+</div>
+
+<div class="product-detail">
+    <div class="product-detail__gallery">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% elif product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
         {% else %}
-            <p class="not-available">Немає в наявності</p>
+            <span class="product-detail__no-image">🌵</span>
         {% endif %}
-        <button class="buy-button" disabled>Купити</button>
     </div>
+
+    <div class="product-detail__info">
+        <span class="product-detail__category-badge">
+            <a href="{% url 'shop:category' product.category.slug %}">{{ product.category.name }}</a>
+        </span>
+
+        <h1 class="product-detail__name">{{ product.name }}</h1>
+
+        <div class="product-detail__price">{{ product.price }} грн</div>
+
+        {% if product.description %}
+            <div class="product-detail__desc">{{ product.description }}</div>
+        {% endif %}
+
+        <div class="product-detail__meta">
+            <span>
+                📦 На складі: {{ product.stock }} шт.
+            </span>
+            <span>
+                {% if product.available %}
+                    ✅ В наявності
+                {% else %}
+                    ❌ Немає в наявності
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="product-detail__actions">
+            <button class="btn btn-primary" disabled>🛒 Купити</button>
+            <a href="{% url 'shop:category' product.category.slug %}" class="btn btn-outline">
+                ← До категорії
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if related_products %}
+<section class="related-section">
+    <h2>Схожі товари</h2>
+    <div class="products-grid">
+        {% for rp in related_products %}
+        <div class="product-card">
+            <div class="product-card__image-wrap">
+                {% if rp.image %}
+                    <img src="{{ rp.image.url }}" alt="{{ rp.name }}">
+                {% elif rp.image_url %}
+                    <img src="{{ rp.image_url }}" alt="{{ rp.name }}">
+                {% else %}
+                    <span class="product-card__no-image">🌵</span>
+                {% endif %}
+            </div>
+            <div class="product-card__body">
+                <span class="product-card__category">{{ rp.category.name }}</span>
+                <div class="product-card__name">
+                    <a href="{% url 'shop:product_detail' rp.slug %}">{{ rp.name }}</a>
+                </div>
+                <div class="product-card__footer">
+                    <span class="product-card__price">{{ rp.price }} грн</span>
+                    {% if rp.available %}
+                        <span class="badge-available">В наявності</span>
+                    {% else %}
+                        <span class="badge-unavailable">Немає</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
 {% endblock %}

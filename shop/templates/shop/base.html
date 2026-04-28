@@ -8,34 +8,96 @@
     <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo">Магазин Кактусів</div>
-            <nav>
-                <ul>
-                    <li><a href="{% url 'shop:main' %}">Головна</a></li>
-                    {% for category in categories %}
-                        <li><a href="{% url 'shop:category' category.slug %}">{{ category.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+<header>
+    <div class="header-inner">
+        <a href="{% url 'shop:main' %}" class="logo">
+            <span class="logo-icon">🌵</span>
+            <span>КактусShop</span>
+        </a>
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-links">
-                <a href="{% url 'shop:main' %}">Головна</a>
-                <a href="{% url 'shop:about' %}">Про нас</a>
-                <a href="{% url 'shop:contacts' %}">Контакти</a>
-                <a href="{% url 'shop:privacy' %}">Політика конфіденційності</a>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{% url 'shop:main' %}">Головна</a></li>
+
+                {% if categories %}
+                <li class="nav-categories">
+                    <a href="#">Категорії</a>
+                    <div class="dropdown">
+                        {% for cat in categories %}
+                            <a href="{% url 'shop:category' cat.slug %}">{{ cat.name }}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+                {% endif %}
+
+                <li><a href="{% url 'shop:about' %}">Про нас</a></li>
+                <li><a href="{% url 'shop:contacts' %}">Контакти</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="logo">
+                <span class="logo-icon">🌵</span>
+                <span>КактусShop</span>
             </div>
-            <p>&copy; 2026 Магазин Кактусів. Всі права захищені.</p>
+            <p>Найбільший інтернет-магазин кактусів в Україні. Рідкісні та класичні сорти для колекціонерів і любителів рослин.</p>
         </div>
-    </footer>
+
+        <div class="footer-col">
+            <h4>Каталог</h4>
+            <ul>
+                <li><a href="{% url 'shop:main' %}">Всі товари</a></li>
+                {% for cat in categories %}
+                    <li><a href="{% url 'shop:category' cat.slug %}">{{ cat.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Компанія</h4>
+            <ul>
+                <li><a href="{% url 'shop:about' %}">Про нас</a></li>
+                <li><a href="{% url 'shop:contacts' %}">Контакти</a></li>
+                <li><a href="{% url 'shop:privacy' %}">Конфіденційність</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <div class="footer-contact-item">
+                <span class="footer-contact-item__icon">📞</span>
+                <span>+380 67 123 45 67</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="footer-contact-item__icon">✉️</span>
+                <span>info@cactus-shop.ua</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="footer-contact-item__icon">📍</span>
+                <span>м. Київ, вул. Зелена 42</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom-inner">
+            <p>&copy; 2026 КактусShop. Всі права захищені.</p>
+            <div class="footer-bottom-links">
+                <a href="{% url 'shop:privacy' %}">Політика конфіденційності</a>
+                <a href="{% url 'shop:contacts' %}">Зворотній зв'язок</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

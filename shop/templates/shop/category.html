@@ -1,38 +1,86 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}{{ category.name }} - {{ block.super }}{% endblock %}
+{% block title %}{{ category.name }} — КактусShop{% endblock %}
 
 {% block content %}
+
+<div class="breadcrumb">
+    <a href="{% url 'shop:main' %}">Головна</a>
+    <span class="breadcrumb__sep">/</span>
+    <span>{{ category.name }}</span>
+</div>
+
+<div class="category-header">
     <h1>{{ category.name }}</h1>
-    <p>{{ category.description }}</p>
-    <div class="products">
+    {% if category.description %}
+        <p>{{ category.description }}</p>
+    {% endif %}
+</div>
+
+{% if products %}
+    <div class="products-grid">
         {% for product in products %}
-            <div class="product">
-                {% if product.image_url %}
-                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-thumb">
-                {% endif %}
-                <h3><a href="{% url 'shop:product_detail' product.slug %}">{{ product.name }}</a></h3>
-                <p>{{ product.description }}</p>
-                <p class="price">{{ product.price }} грн</p>
-                <p>Кількість: {{ product.stock }}</p>
-                {% if product.available %}
-                    <p>В наявності</p>
+        <div class="product-card">
+            <div class="product-card__image-wrap">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% elif product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}">
                 {% else %}
-                    <p>Немає в наявності</p>
+                    <span class="product-card__no-image">🌵</span>
                 {% endif %}
             </div>
+            <div class="product-card__body">
+                <span class="product-card__category">{{ product.category.name }}</span>
+                <div class="product-card__name">
+                    <a href="{% url 'shop:product_detail' product.slug %}">{{ product.name }}</a>
+                </div>
+                {% if product.description %}
+                    <p class="product-card__desc">{{ product.description }}</p>
+                {% endif %}
+                <div class="product-card__footer">
+                    <span class="product-card__price">{{ product.price }} грн</span>
+                    {% if product.available %}
+                        <span class="badge-available">В наявності</span>
+                    {% else %}
+                        <span class="badge-unavailable">Немає</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </div>
 
     {% if is_paginated %}
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}">Попередня</a>
+    <nav class="pagination" aria-label="Пагінація">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="pagination__link">&larr; Попередня</a>
+        {% else %}
+            <span class="pagination__disabled">&larr; Попередня</span>
+        {% endif %}
+
+        {% for num in paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="pagination__current">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}" class="pagination__link">{{ num }}</a>
             {% endif %}
-            <span class="current">Сторінка {{ page_obj.number }} з {{ paginator.num_pages }}</span>
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Наступна</a>
-            {% endif %}
-        </div>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="pagination__link">Наступна &rarr;</a>
+        {% else %}
+            <span class="pagination__disabled">Наступна &rarr;</span>
+        {% endif %}
+    </nav>
     {% endif %}
+
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state__icon">🌵</div>
+        <h2>У цій категорії поки немає товарів</h2>
+        <p><a href="{% url 'shop:main' %}">Переглянути всі товари</a></p>
+    </div>
+{% endif %}
+
 {% endblock %}

@@ -29,6 +29,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField('Кількість на складі', default=0)
     description = models.TextField('Опис товару', blank=True)
     image_url = models.URLField('Фото URL', blank=True)
+    image = models.ImageField('Фото товару', upload_to='products/', blank=True, null=True)
     available = models.BooleanField('В наявності', default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

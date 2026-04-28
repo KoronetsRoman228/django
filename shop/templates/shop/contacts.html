@@ -1,9 +1,42 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Контакти - {{ block.super }}{% endblock %}
+{% block title %}Контакти — КактусShop{% endblock %}
 
 {% block content %}
-    <h1>{{ title }}</h1>
-    <p>{{ message|linebreaksbr }}</p>
-    <p>Чекаємо на ваші запити щодо замовлень та доступності рослин.</p>
+<div class="breadcrumb">
+    <a href="{% url 'shop:main' %}">Головна</a>
+    <span class="breadcrumb__sep">/</span>
+    <span>Контакти</span>
+</div>
+
+<div class="static-page">
+    <h1>📞 Контакти</h1>
+    <p>Ми завжди раді відповісти на ваші запитання щодо замовлень, наявності рослин та умов доставки.</p>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-card__icon">📞</div>
+            <h3>Телефон</h3>
+            <p>+380 67 123 45 67<br>Пн–Пт: 9:00–18:00</p>
+        </div>
+        <div class="info-card">
+            <div class="info-card__icon">✉️</div>
+            <h3>Email</h3>
+            <p>info@cactus-shop.ua<br>Відповідь протягом 24 год</p>
+        </div>
+        <div class="info-card">
+            <div class="info-card__icon">📍</div>
+            <h3>Адреса</h3>
+            <p>м. Київ<br>вул. Зелена, 42</p>
+        </div>
+    </div>
+
+    <h2>Режим роботи</h2>
+    <p>Понеділок — П'ятниця: 9:00 — 18:00<br>
+    Субота: 10:00 — 15:00<br>
+    Неділя: вихідний</p>
+
+    <h2>Самовивіз</h2>
+    <p>Самовивіз доступний з нашого складу за попереднім записом. Телефонуйте або пишіть на email для уточнення деталей.</p>
+</div>
 {% endblock %}
