@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
+from .models import Category, Product
 
 
 def get_pages():
@@ -10,21 +12,49 @@ def get_pages():
 
 
 def main(request):
+    categories = Category.objects.all()
+    products_list = Product.objects.filter(available=True)
+    paginator = Paginator(products_list, 6)  # 6 products per page
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     context = {
-        'title': 'Головна сторінка',
-        'message': 'Це головна сторінка. Оберіть одну з інших сторінок нижче.',
-        'pages': get_pages(),
-        'is_main': True,
+        'categories': categories,
+        'products': products,
+        'is_paginated': products.has_other_pages(),
+        'page_obj': products,
+        'paginator': paginator,
     }
     return render(request, 'shop/main.html', context)
 
 
+def category(request, slug):
+    categories = Category.objects.all()
+    category_obj = get_object_or_404(Category, slug=slug)
+    products_list = category_obj.products.filter(available=True)
+    paginator = Paginator(products_list, 6)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
+    context = {
+        'categories': categories,
+        'category': category_obj,
+        'products': products,
+        'is_paginated': products.has_other_pages(),
+        'page_obj': products,
+        'paginator': paginator,
+    }
+    return render(request, 'shop/category.html', context)
+
+
 def page(request, page_id):
+    categories = Category.objects.all()
     page_title = f'Сторінка {page_id}'
     context = {
         'title': page_title,
         'message': f'Ви зараз на {page_title}. Натисніть, щоб повернутися на головну.',
+        'categories': categories,
         'pages': get_pages(),
         'is_main': False,
     }
-    return render(request, 'shop/main.html', context)
+    return render(request, 'shop/page.html', context)

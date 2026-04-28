@@ -1,9 +1,10 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}Головна сторінка - {{ block.super }}{% endblock %}
+{% block title %}{{ category.name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h1>Наші кактуси</h1>
+    <h1>{{ category.name }}</h1>
+    <p>{{ category.description }}</p>
     <div class="products">
         {% for product in products %}
             <div class="product">

@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+
+    {% if is_main %}
+        <ul>
+            {% for page in pages %}
+                <li><a href="{{ page.path }}">{{ page.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p><a href="{% url 'shop:main' %}">Повернутись на головну</a></p>
+    {% endif %}
+{% endblock %}
