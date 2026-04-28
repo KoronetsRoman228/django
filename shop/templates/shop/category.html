@@ -8,7 +8,10 @@
     <div class="products">
         {% for product in products %}
             <div class="product">
-                <h3>{{ product.name }}</h3>
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-thumb">
+                {% endif %}
+                <h3><a href="{% url 'shop:product_detail' product.slug %}">{{ product.name }}</a></h3>
                 <p>{{ product.description }}</p>
                 <p class="price">{{ product.price }} грн</p>
                 <p>Кількість: {{ product.stock }}</p>

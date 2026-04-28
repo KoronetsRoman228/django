@@ -30,9 +30,9 @@
         <div class="footer-container">
             <div class="footer-links">
                 <a href="{% url 'shop:main' %}">Головна</a>
-                <a href="#">Про нас</a>
-                <a href="#">Контакти</a>
-                <a href="#">Політика конфіденційності</a>
+                <a href="{% url 'shop:about' %}">Про нас</a>
+                <a href="{% url 'shop:contacts' %}">Контакти</a>
+                <a href="{% url 'shop:privacy' %}">Політика конфіденційності</a>
             </div>
             <p>&copy; 2026 Магазин Кактусів. Всі права захищені.</p>
         </div>

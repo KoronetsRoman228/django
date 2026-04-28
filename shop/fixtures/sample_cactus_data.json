@@ -27,9 +27,11 @@
     "fields": {
       "category": 1,
       "name": "Малютка Ехінопсис",
+      "slug": "malyutka-ehinopsis",
       "price": "199.99",
       "stock": 12,
       "description": "Компактний кактус з ніжними квітами.",
+      "image_url": "https://via.placeholder.com/300x200?text=Malyutka+Ehinopsis",
       "available": true,
       "created_at": "2026-04-23T12:00:00Z",
       "updated_at": "2026-04-23T12:00:00Z"
@@ -41,9 +43,91 @@
     "fields": {
       "category": 2,
       "name": "Орхідея кактус",
+      "slug": "orhideya-kaktus",
       "price": "499.50",
       "stock": 5,
       "description": "Рідкісний колір та незвичайна форма.",
+      "image_url": "https://via.placeholder.com/300x200?text=Orhideya+Kaktus",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 3,
+    "fields": {
+      "category": 1,
+      "name": "Кактус Мамміллярія",
+      "slug": "kaktus-mammillyariya",
+      "price": "299.99",
+      "stock": 8,
+      "description": "Маленький кактус з білими волосками.",
+      "image_url": "https://via.placeholder.com/300x200?text=Mammillyariya",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 4,
+    "fields": {
+      "category": 1,
+      "name": "Кактус Зігокактус",
+      "slug": "kaktus-zigokaktus",
+      "price": "349.99",
+      "stock": 6,
+      "description": "Декабрист - кактус з яскравими квітами.",
+      "image_url": "https://via.placeholder.com/300x200?text=Zigokaktus",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 5,
+    "fields": {
+      "category": 2,
+      "name": "Кактус Астрофітум",
+      "slug": "kaktus-astrofitum",
+      "price": "799.99",
+      "stock": 3,
+      "description": "Рідкісний кактус з зіркоподібною формою.",
+      "image_url": "https://via.placeholder.com/300x200?text=Astrofitum",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 6,
+    "fields": {
+      "category": 2,
+      "name": "Кактус Лофофора",
+      "slug": "kaktus-lofofora",
+      "price": "1299.99",
+      "stock": 2,
+      "description": "Екзотичний кактус з психоделічними властивостями.",
+      "image_url": "https://via.placeholder.com/300x200?text=Lofophora",
+      "available": true,
+      "created_at": "2026-04-23T12:00:00Z",
+      "updated_at": "2026-04-23T12:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 7,
+    "fields": {
+      "category": 1,
+      "name": "Кактус Опунція",
+      "slug": "kaktus-opuntsiya",
+      "price": "249.99",
+      "stock": 10,
+      "description": "Кактус з плоскими сегментами.",
+      "image_url": "https://via.placeholder.com/300x200?text=Opuntsiya",
       "available": true,
       "created_at": "2026-04-23T12:00:00Z",
       "updated_at": "2026-04-23T12:00:00Z"

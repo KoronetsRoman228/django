@@ -24,9 +24,11 @@ class Product(models.Model):
         verbose_name='Категорія'
     )
     name = models.CharField('Назва товару', max_length=150)
+    slug = models.SlugField('Слаг', unique=True)
     price = models.DecimalField('Ціна', max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField('Кількість на складі', default=0)
     description = models.TextField('Опис товару', blank=True)
+    image_url = models.URLField('Фото URL', blank=True)
     available = models.BooleanField('В наявності', default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
