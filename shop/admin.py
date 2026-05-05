@@ -194,3 +194,16 @@ class ProductRatingAdmin(admin.ModelAdmin):
     list_display = ('product', 'reviewer_name', 'rating', 'created_at')
     list_filter = ('rating', 'product')
     search_fields = ('reviewer_name', 'product__name')
+
+
+# ─── Custom User Admin ────────────────────────────────────────────────────────
+
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+
+class CustomUserAdmin(UserAdmin):
+    def has_add_permission(self, request):
+        return False
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)

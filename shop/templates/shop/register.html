@@ -1,0 +1,48 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }} — КактусShop{% endblock %}
+
+{% block content %}
+
+<div class="auth-form-container">
+    <div class="auth-form-box">
+        <h1>{{ title }}</h1>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{{ form.username.label }}</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <span class="field-error">{{ form.username.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label>{{ form.email.label }}</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <span class="field-error">{{ form.email.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label>{{ form.password1.label }}</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <span class="field-error">{{ form.password1.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label>{{ form.password2.label }}</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <span class="field-error">{{ form.password2.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Зареєструватись</button>
+        </form>
+        <p class="auth-links">
+            Вже маєте акаунт? <a href="{% url 'login' %}">Увійдіть</a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

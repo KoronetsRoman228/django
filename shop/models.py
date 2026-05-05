@@ -73,6 +73,7 @@ class Customer(models.Model):
 # ─── Кошик ────────────────────────────────────────────────────────────────────
 
 class Order(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Користувач')
     session_key = models.CharField('Ключ сесії', max_length=40)
     created_at = models.DateTimeField('Створено', auto_now_add=True)
     is_completed = models.BooleanField('Завершено', default=False)

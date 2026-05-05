@@ -145,5 +145,4 @@ EMAIL_HOST_USER    = 'rewino843gmail.com'
 EMAIL_HOST_PASSWORD = 'TApochok228'
 DEFAULT_FROM_EMAIL = 'КактусShop <rewino843gmail.com>'
 
-DEFAULT_FROM_EMAIL = 'КактусShop <noreply@cactus-shop.ua>'
 NEWSLETTER_FROM_EMAIL = DEFAULT_FROM_EMAIL

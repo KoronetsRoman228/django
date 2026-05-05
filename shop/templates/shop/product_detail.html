@@ -34,8 +34,8 @@
         {% if avg_rating %}
         <div class="product-rating-summary">
             <div class="stars-display">
-                {% for i in "12345" %}
-                    {% if forloop.counter <= avg_rating|floatformat:"0"|add:"0" %}
+                {% for i in "54321" %}
+                    {% if i|add:0 <= avg_rating|floatformat:0|add:0 %}
                         <span class="star star--filled">★</span>
                     {% else %}
                         <span class="star star--empty">★</span>
@@ -86,6 +86,7 @@
         <!-- Форма оцінки -->
         <div class="rating-form-box">
             <h2>⭐ Оцінити товар</h2>
+            {% if rating_form %}
             <form method="post" class="rating-form">
                 {% csrf_token %}
                 <input type="hidden" name="submit_rating" value="1">
@@ -125,6 +126,9 @@
 
                 <button type="submit" class="btn btn-primary">Залишити відгук</button>
             </form>
+            {% else %}
+            <p>Щоб залишити відгук, <a href="{% url 'login' %}">увійдіть</a> або <a href="{% url 'shop:register' %}">зареєструйтесь</a>.</p>
+            {% endif %}
         </div>
 
         <!-- Список відгуків -->
@@ -136,8 +140,8 @@
                     <div class="review-card__header">
                         <strong>{{ r.reviewer_name }}</strong>
                         <div class="review-stars">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= r.rating %}
+                            {% for i in "54321" %}
+                                {% if i|add:0 <= r.rating %}
                                     <span class="star star--filled">★</span>
                                 {% else %}
                                     <span class="star star--empty">★</span>

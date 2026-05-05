@@ -1,5 +1,26 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import NewsletterSubscriber, ProductRating
+
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
 
 
 class NewsletterForm(forms.ModelForm):
@@ -22,7 +43,7 @@ class NewsletterForm(forms.ModelForm):
         }
 
 
-RATING_CHOICES = [(i, f'{i} ★') for i in range(1, 6)]
+RATING_CHOICES = [(i, f'{i} ★') for i in range(5, 0, -1)]
 
 
 class RatingForm(forms.ModelForm):
@@ -35,16 +56,8 @@ class RatingForm(forms.ModelForm):
 
     class Meta:
         model = ProductRating
-        fields = ['reviewer_name', 'reviewer_email', 'rating', 'comment']
+        fields = ['rating', 'comment']
         widgets = {
-            'reviewer_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                "placeholder": "Ваше ім'я",
-            }),
-            'reviewer_email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ваш email (необов\'язково)',
-            }),
             'comment': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 3,
@@ -52,7 +65,5 @@ class RatingForm(forms.ModelForm):
             }),
         }
         labels = {
-            'reviewer_name': "Ім'я",
-            'reviewer_email': 'Email',
             'comment': 'Коментар',
         }

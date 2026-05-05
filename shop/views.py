@@ -1,16 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Avg
 from .models import Category, Product, Order, OrderItem, NewsletterSubscriber, ProductRating
-from .forms import NewsletterForm, RatingForm
+from .forms import NewsletterForm, RatingForm, RegisterForm
 
 
 def get_or_create_cart(request):
     if not request.session.session_key:
         request.session.create()
     session_key = request.session.session_key
-    order, _ = Order.objects.get_or_create(session_key=session_key, is_completed=False)
+    user = request.user if request.user.is_authenticated else None
+    order, _ = Order.objects.get_or_create(
+        session_key=session_key, user=user, is_completed=False
+    )
     return order
 
 
@@ -61,18 +66,22 @@ def product_detail(request, slug):
 
     ratings = product.ratings.all().order_by('-created_at')
     avg_rating = ratings.aggregate(avg=Avg('rating'))['avg']
-    rating_form = RatingForm()
 
-    if request.method == 'POST' and 'submit_rating' in request.POST:
-        rating_form = RatingForm(request.POST)
-        if rating_form.is_valid():
-            r = rating_form.save(commit=False)
-            r.product = product
-            r.save()
-            messages.success(request, 'Дякуємо за вашу оцінку!')
-            return redirect('shop:product_detail', slug=slug)
-        else:
-            messages.error(request, 'Будь ласка, виправте помилки у формі оцінки.')
+    rating_form = None
+    if request.user.is_authenticated:
+        rating_form = RatingForm()
+        if request.method == 'POST' and 'submit_rating' in request.POST:
+            rating_form = RatingForm(request.POST)
+            if rating_form.is_valid():
+                r = rating_form.save(commit=False)
+                r.product = product
+                r.reviewer_name = request.user.username
+                r.reviewer_email = request.user.email
+                r.save()
+                messages.success(request, 'Дякуємо за вашу оцінку!')
+                return redirect('shop:product_detail', slug=slug)
+            else:
+                messages.error(request, 'Будь ласка, виправте помилки у формі оцінки.')
 
     context = {
         'categories': categories,
@@ -151,6 +160,8 @@ def cart_checkout(request):
     if order.items.count() == 0:
         messages.error(request, 'Кошик порожній!')
         return redirect('shop:cart')
+    if request.user.is_authenticated:
+        order.user = request.user
     order.is_completed = True
     order.save()
     messages.success(request, 'Замовлення успішно оформлено! Дякуємо за покупку!')
@@ -176,3 +187,37 @@ def newsletter_subscribe(request):
             messages.error(request, 'Перевірте введені дані.')
     next_url = request.POST.get('next') or request.META.get('HTTP_REFERER', '/')
     return redirect(next_url)
+
+
+# ── Аутентифікація ────────────────────────────────────────────────────────────
+
+def register(request):
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'Вітаємо, {user.username}! Ви успішно зареєструвались.')
+            return redirect('shop:main')
+    else:
+        form = RegisterForm()
+    return render(request, 'shop/register.html', {
+        'categories': categories,
+        'form': form,
+        'title': 'Реєстрація',
+    })
+
+
+@login_required
+def profile(request):
+    categories = Category.objects.all()
+    if request.user.is_superuser:
+        orders = Order.objects.filter(is_completed=True).order_by('-created_at')
+    else:
+        orders = Order.objects.filter(user=request.user, is_completed=True).order_by('-created_at')
+    return render(request, 'shop/profile.html', {
+        'categories': categories,
+        'orders': orders,
+        'title': 'Особистий кабінет',
+    })

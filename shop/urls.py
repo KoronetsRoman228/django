@@ -20,4 +20,8 @@ urlpatterns = [
 
     # Розсилка
     path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
+
+    # Аутентифікація
+    path('register/', views.register, name='register'),
+    path('profile/', views.profile, name='profile'),
 ]
