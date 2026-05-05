@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 class Category(models.Model):
     name = models.CharField('Назва', max_length=100)
@@ -66,3 +68,101 @@ class Customer(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+
+# ─── Кошик ────────────────────────────────────────────────────────────────────
+
+class Order(models.Model):
+    session_key = models.CharField('Ключ сесії', max_length=40)
+    created_at = models.DateTimeField('Створено', auto_now_add=True)
+    is_completed = models.BooleanField('Завершено', default=False)
+
+    class Meta:
+        verbose_name = 'Замовлення'
+        verbose_name_plural = 'Замовлення'
+
+    def __str__(self):
+        return f'Замовлення #{self.pk}'
+
+    def get_total(self):
+        return sum(item.get_subtotal() for item in self.items.all())
+
+    def get_total_items(self):
+        return sum(item.quantity for item in self.items.all())
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Замовлення')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    quantity = models.PositiveIntegerField('Кількість', default=1)
+    price = models.DecimalField('Ціна', max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Позиція замовлення'
+        verbose_name_plural = 'Позиції замовлення'
+
+    def __str__(self):
+        return f'{self.product.name} x{self.quantity}'
+
+    def get_subtotal(self):
+        return self.price * self.quantity
+
+
+# ─── Підписка на розсилку ─────────────────────────────────────────────────────
+
+class NewsletterSubscriber(models.Model):
+    name = models.CharField('Імʼя', max_length=100)
+    email = models.EmailField('Email', unique=True)
+    subscribed_at = models.DateTimeField('Дата підписки', auto_now_add=True)
+    is_active = models.BooleanField('Активна підписка', default=True)
+
+    class Meta:
+        verbose_name = 'Підписник розсилки'
+        verbose_name_plural = 'Підписники розсилки'
+
+    def __str__(self):
+        return f'{self.name} <{self.email}>'
+
+
+# ─── Оцінка товару ────────────────────────────────────────────────────────────
+
+class ProductRating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings', verbose_name='Товар')
+    reviewer_name = models.CharField('Імʼя', max_length=100)
+    reviewer_email = models.EmailField('Email', blank=True)
+    rating = models.PositiveSmallIntegerField(
+        'Оцінка',
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    comment = models.TextField('Коментар', blank=True)
+    created_at = models.DateTimeField('Дата оцінки', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Оцінка товару'
+        verbose_name_plural = 'Оцінки товарів'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.product.name} — {self.rating}★ від {self.reviewer_name}'
+
+
+# ─── Кампанія розсилки ────────────────────────────────────────────────────────
+
+class NewsletterCampaign(models.Model):
+    subject = models.CharField('Тема листа', max_length=200)
+    body_html = models.TextField('Тіло листа (HTML)')
+    body_text = models.TextField('Тіло листа (текст)', blank=True,
+                                  help_text='Текстова версія для клієнтів без HTML. Заповнюється автоматично якщо порожньо.')
+    sent_at = models.DateTimeField('Дата відправки', null=True, blank=True)
+    recipients_count = models.PositiveIntegerField('Кількість отримувачів', default=0)
+    is_sent = models.BooleanField('Відправлено', default=False)
+    created_at = models.DateTimeField('Створено', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Кампанія розсилки'
+        verbose_name_plural = 'Кампанії розсилки'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        status = '✅ Надіслано' if self.is_sent else '📝 Чернетка'
+        return f'{self.subject} [{status}]'

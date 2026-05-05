@@ -38,5 +38,19 @@
 
     <h2>Самовивіз</h2>
     <p>Самовивіз доступний з нашого складу за попереднім записом. Телефонуйте або пишіть на email для уточнення деталей.</p>
+
+    <div class="newsletter-box">
+        <h2>📧 Підпишіться на розсилку</h2>
+        <p>Отримуйте новини про акції та нові надходження!</p>
+        <form method="post" action="{% url 'shop:newsletter_subscribe' %}" class="newsletter-form-inline">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <div class="newsletter-fields">
+                {{ newsletter_form.name }}
+                {{ newsletter_form.email }}
+                <button type="submit" class="btn btn-primary">Підписатись</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

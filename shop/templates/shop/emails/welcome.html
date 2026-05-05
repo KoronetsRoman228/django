@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ласкаво просимо до КактусShop!</title>
+<style>
+  body { margin:0; padding:0; background:#f5f0e8; font-family:'Segoe UI',Arial,sans-serif; }
+  .wrapper { max-width:600px; margin:40px auto; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.1); }
+  .header { background:linear-gradient(135deg,#2d6a4f,#40916c); padding:40px 40px 30px; text-align:center; }
+  .header h1 { margin:0; color:#fff; font-size:1.9rem; letter-spacing:.5px; }
+  .header p  { margin:8px 0 0; color:rgba(255,255,255,.85); font-size:1rem; }
+  .logo-icon { font-size:3rem; display:block; margin-bottom:10px; }
+  .body { padding:36px 40px; }
+  .body h2 { color:#2d6a4f; margin-top:0; }
+  .body p  { color:#444; line-height:1.7; }
+  .highlight { background:#d8f3dc; border-left:4px solid #40916c; border-radius:6px; padding:16px 20px; margin:20px 0; }
+  .highlight p { margin:0; color:#1b4332; font-weight:500; }
+  .btn { display:inline-block; background:#40916c; color:#fff!important; text-decoration:none; padding:13px 32px; border-radius:50px; font-weight:700; font-size:1rem; margin:20px 0 8px; }
+  .benefits { display:flex; gap:16px; flex-wrap:wrap; margin:24px 0; }
+  .benefit { flex:1; min-width:140px; background:#f5f0e8; border-radius:10px; padding:16px; text-align:center; }
+  .benefit .icon { font-size:2rem; }
+  .benefit p { margin:8px 0 0; font-size:.85rem; color:#444; }
+  .footer { background:#2d6a4f; color:rgba(255,255,255,.75); padding:24px 40px; text-align:center; font-size:.82rem; }
+  .footer a { color:rgba(255,255,255,.9); }
+  .unsubscribe { margin-top:12px; font-size:.78rem; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <span class="logo-icon">🌵</span>
+    <h1>КактусShop</h1>
+    <p>Найбільший магазин кактусів в Україні</p>
+  </div>
+
+  <div class="body">
+    <h2>Вітаємо, {{ subscriber.name }}! 🎉</h2>
+    <p>Дякуємо, що підписались на нашу розсилку. Тепер ви першими дізнаватиметесь про:</p>
+
+    <div class="benefits">
+      <div class="benefit">
+        <div class="icon">🌵</div>
+        <p>Нові надходження рідкісних кактусів</p>
+      </div>
+      <div class="benefit">
+        <div class="icon">🏷️</div>
+        <p>Акції та знижки для підписників</p>
+      </div>
+      <div class="benefit">
+        <div class="icon">📚</div>
+        <p>Поради з догляду за рослинами</p>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <p>💡 Порада: додайте нашу адресу до контактів, щоб листи не потрапляли в спам.</p>
+    </div>
+
+    <p>Перейдіть до нашого каталогу та оберіть свого першого (або наступного) кактуса:</p>
+    <a href="http://127.0.0.1:8000/" class="btn">🌵 Перейти до каталогу</a>
+
+    <p style="color:#888;font-size:.9rem;">З повагою,<br><strong>Команда КактусShop</strong></p>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 КактусShop · м. Київ, вул. Зелена, 42</p>
+    <p>📞 +380 67 123 45 67 · ✉️ info@cactus-shop.ua</p>
+    <p class="unsubscribe">
+      Ви отримали цей лист, бо підписались на розсилку КактусShop.<br>
+      Щоб відписатись — надішліть листа на <a href="mailto:info@cactus-shop.ua">info@cactus-shop.ua</a>
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -30,6 +30,27 @@
 
         <h1 class="product-detail__name">{{ product.name }}</h1>
 
+        <!-- Середня оцінка -->
+        {% if avg_rating %}
+        <div class="product-rating-summary">
+            <div class="stars-display">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= avg_rating|floatformat:"0"|add:"0" %}
+                        <span class="star star--filled">★</span>
+                    {% else %}
+                        <span class="star star--empty">★</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <span class="rating-value">{{ avg_rating|floatformat:1 }} / 5</span>
+            <span class="rating-count">({{ ratings.count }} відгук{{ ratings.count|pluralize:",и,ів" }})</span>
+        </div>
+        {% else %}
+        <div class="product-rating-summary product-rating-summary--empty">
+            <span>Ще немає оцінок — будьте першим!</span>
+        </div>
+        {% endif %}
+
         <div class="product-detail__price">{{ product.price }} грн</div>
 
         {% if product.description %}
@@ -37,26 +58,105 @@
         {% endif %}
 
         <div class="product-detail__meta">
+            <span>📦 На складі: {{ product.stock }} шт.</span>
             <span>
-                📦 На складі: {{ product.stock }} шт.
-            </span>
-            <span>
-                {% if product.available %}
-                    ✅ В наявності
-                {% else %}
-                    ❌ Немає в наявності
-                {% endif %}
+                {% if product.available %}✅ В наявності{% else %}❌ Немає в наявності{% endif %}
             </span>
         </div>
 
         <div class="product-detail__actions">
-            <button class="btn btn-primary" disabled>🛒 Купити</button>
-            <a href="{% url 'shop:category' product.category.slug %}" class="btn btn-outline">
-                ← До категорії
-            </a>
+            {% if product.available %}
+            <form method="post" action="{% url 'shop:cart_add' product.pk %}" style="display:inline">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn btn-primary">🛒 Додати до кошика</button>
+            </form>
+            {% else %}
+            <button class="btn btn-primary" disabled>🛒 Немає в наявності</button>
+            {% endif %}
+            <a href="{% url 'shop:category' product.category.slug %}" class="btn btn-outline">← До категорії</a>
         </div>
     </div>
 </div>
+
+<!-- ── Оцінка товару ──────────────────────────────────────────────────── -->
+<section class="ratings-section">
+    <div class="ratings-layout">
+
+        <!-- Форма оцінки -->
+        <div class="rating-form-box">
+            <h2>⭐ Оцінити товар</h2>
+            <form method="post" class="rating-form">
+                {% csrf_token %}
+                <input type="hidden" name="submit_rating" value="1">
+
+                <div class="form-group">
+                    <label>{{ rating_form.reviewer_name.label }}</label>
+                    {{ rating_form.reviewer_name }}
+                    {% if rating_form.reviewer_name.errors %}
+                        <span class="field-error">{{ rating_form.reviewer_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ rating_form.reviewer_email.label }}</label>
+                    {{ rating_form.reviewer_email }}
+                </div>
+
+                <div class="form-group">
+                    <label>Оцінка</label>
+                    <div class="star-rating-input">
+                        {% for radio in rating_form.rating %}
+                        <label class="star-label" title="{{ radio.choice_value }} зірок">
+                            {{ radio.tag }}
+                            <span class="star-icon">★</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% if rating_form.rating.errors %}
+                        <span class="field-error">{{ rating_form.rating.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ rating_form.comment.label }}</label>
+                    {{ rating_form.comment }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Залишити відгук</button>
+            </form>
+        </div>
+
+        <!-- Список відгуків -->
+        <div class="reviews-list">
+            <h2>💬 Відгуки ({{ ratings.count }})</h2>
+            {% if ratings %}
+                {% for r in ratings %}
+                <div class="review-card">
+                    <div class="review-card__header">
+                        <strong>{{ r.reviewer_name }}</strong>
+                        <div class="review-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= r.rating %}
+                                    <span class="star star--filled">★</span>
+                                {% else %}
+                                    <span class="star star--empty">★</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="review-date">{{ r.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    {% if r.comment %}
+                    <p class="review-comment">{{ r.comment }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-reviews">Відгуків поки немає. Станьте першим!</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
 
 {% if related_products %}
 <section class="related-section">

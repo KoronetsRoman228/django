@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shop.context_processors.cart_info',
             ],
         },
     },
@@ -120,3 +121,29 @@ STATIC_URL = 'static/'
 # Media files (User uploads)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EMAIL SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────
+
+# --- Варіант 1: виводить листи у консоль (для розробки, нічого не надсилає) ---
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# --- Варіант 2: реальна відправка через Gmail ---
+# Щоб увімкнути:
+#   1. Закоментуйте рядок EMAIL_BACKEND вище
+#   2. Розкоментуйте блок нижче
+#   3. У Gmail: Settings → Security → 2FA → App passwords → create password
+#   4. Замініть EMAIL_HOST_USER і EMAIL_HOST_PASSWORD
+#
+EMAIL_BACKEND      = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST         = 'smtp.gmail.com'
+EMAIL_PORT         = 587
+EMAIL_USE_TLS      = True
+EMAIL_HOST_USER    = 'rewino843gmail.com'
+EMAIL_HOST_PASSWORD = 'TApochok228'
+DEFAULT_FROM_EMAIL = 'КактусShop <rewino843gmail.com>'
+
+DEFAULT_FROM_EMAIL = 'КактусShop <noreply@cactus-shop.ua>'
+NEWSLETTER_FROM_EMAIL = DEFAULT_FROM_EMAIL

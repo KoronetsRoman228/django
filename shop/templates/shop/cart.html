@@ -1,0 +1,88 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Кошик — КактусShop{% endblock %}
+
+{% block content %}
+
+<div class="breadcrumb">
+    <a href="{% url 'shop:main' %}">Головна</a>
+    <span class="breadcrumb__sep">/</span>
+    <span>Кошик</span>
+</div>
+
+<div class="cart-page">
+    <h1>🛒 Кошик</h1>
+
+    {% if order.items.all %}
+        <div class="cart-layout">
+            <div class="cart-items">
+                {% for item in order.items.all %}
+                <div class="cart-item">
+                    <div class="cart-item__image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% elif item.product.image_url %}
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <span class="cart-item__no-image">🌵</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="cart-item__info">
+                        <a href="{% url 'shop:product_detail' item.product.slug %}" class="cart-item__name">
+                            {{ item.product.name }}
+                        </a>
+                        <span class="cart-item__price">{{ item.price }} грн / шт.</span>
+                    </div>
+
+                    <form method="post" action="{% url 'shop:cart_update' item.pk %}" class="cart-item__qty-form">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" class="qty-input">
+                        <button type="submit" class="btn btn-sm btn-outline">Оновити</button>
+                    </form>
+
+                    <div class="cart-item__subtotal">
+                        {{ item.get_subtotal }} грн
+                    </div>
+
+                    <form method="post" action="{% url 'shop:cart_remove' item.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-remove" title="Видалити">✕</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <h2>Підсумок</h2>
+                <div class="cart-summary__row">
+                    <span>Товарів:</span>
+                    <span>{{ order.get_total_items }} шт.</span>
+                </div>
+                <div class="cart-summary__row cart-summary__total">
+                    <span>Разом:</span>
+                    <span>{{ order.get_total }} грн</span>
+                </div>
+                <form method="post" action="{% url 'shop:cart_checkout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-block">
+                        ✅ Оформити замовлення
+                    </button>
+                </form>
+                <a href="{% url 'shop:main' %}" class="btn btn-outline btn-block" style="margin-top:.75rem;">
+                    ← Продовжити покупки
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="cart-empty">
+            <div class="cart-empty__icon">🌵</div>
+            <h2>Ваш кошик порожній</h2>
+            <p>Додайте кактус до кошика і він з'явиться тут!</p>
+            <a href="{% url 'shop:main' %}" class="btn btn-primary">Перейти до каталогу</a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

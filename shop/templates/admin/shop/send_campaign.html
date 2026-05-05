@@ -1,0 +1,86 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}Надіслати кампанію — {{ campaign.subject }}{% endblock %}
+
+{% block content %}
+<div style="max-width:700px;">
+
+  <h1>📤 Надіслати розсилку</h1>
+
+  <!-- Картка кампанії -->
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:24px;margin-bottom:24px;">
+    <h2 style="margin-top:0;color:#2d6a4f;">{{ campaign.subject }}</h2>
+
+    <table style="width:100%;border-collapse:collapse;">
+      <tr>
+        <td style="padding:6px 0;color:#666;width:200px;">Статус:</td>
+        <td><span style="background:#fef3c7;color:#78350f;padding:3px 10px;border-radius:20px;font-size:.85rem;">📝 Чернетка</span></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#666;">Активних підписників:</td>
+        <td><strong style="color:#2d6a4f;font-size:1.1rem;">{{ active_count }}</strong></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#666;">Створено:</td>
+        <td>{{ campaign.created_at|date:"d.m.Y H:i" }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Попередній перегляд -->
+  <div style="background:#f8fffe;border:1px solid #d1fae5;border-radius:10px;padding:20px;margin-bottom:24px;">
+    <h3 style="margin-top:0;color:#065f46;">👁️ Попередній перегляд листа</h3>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;max-height:300px;overflow-y:auto;">
+      {{ campaign.body_html|safe }}
+    </div>
+  </div>
+
+  {% if active_count == 0 %}
+  <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;padding:20px;margin-bottom:24px;color:#991b1b;">
+    <strong>⚠️ Немає активних підписників!</strong>
+    <p style="margin:8px 0 0;">Додайте підписників або активуйте існуючих перед відправкою.</p>
+    <a href="{% url 'admin:shop_newslettersubscriber_changelist' %}" style="color:#991b1b;">→ Керувати підписниками</a>
+  </div>
+  {% else %}
+
+  <!-- Форма підтвердження -->
+  <div style="background:#fff;border:2px solid #40916c;border-radius:10px;padding:24px;">
+    <h3 style="margin-top:0;color:#2d6a4f;">⚠️ Підтвердження відправки</h3>
+    <p style="color:#444;">
+      Після натискання кнопки лист буде негайно надіслано
+      <strong>{{ active_count }} підписникам</strong>. Цю дію не можна скасувати.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;
+                  background:#f0fdf4;padding:14px;border-radius:8px;">
+        {{ form.confirm }}
+        <label for="{{ form.confirm.id_for_label }}" style="color:#065f46;font-weight:500;cursor:pointer;">
+          {{ form.confirm.label }}
+        </label>
+      </div>
+      {% if form.confirm.errors %}
+        <p style="color:#dc2626;margin:-10px 0 16px;">{{ form.confirm.errors.0 }}</p>
+      {% endif %}
+
+      <div style="display:flex;gap:12px;">
+        <button type="submit"
+                style="background:#40916c;color:#fff;border:none;padding:12px 28px;
+                       border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
+          📤 Надіслати {{ active_count }} листів
+        </button>
+        <a href="{% url 'admin:shop_newslettercampaign_changelist' %}"
+           style="background:#f3f4f6;color:#374151;border:1px solid #d1d5db;padding:12px 24px;
+                  border-radius:8px;font-weight:600;text-decoration:none;">
+          ← Скасувати
+        </a>
+      </div>
+    </form>
+  </div>
+
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -41,6 +41,13 @@
                             <span class="badge-unavailable">Немає</span>
                         {% endif %}
                     </div>
+                    {% if product.available %}
+                    <form method="post" action="{% url 'shop:cart_add' product.pk %}" class="card-add-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn btn-primary btn-block">🛒 До кошика</button>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -77,6 +84,31 @@
             <p>Скоро тут з'являться чудові кактуси!</p>
         </div>
     {% endif %}
-
 </section>
+
+<!-- ── Розсилка ────────────────────────────────────────────────────── -->
+<section class="newsletter-section">
+    <div class="newsletter-inner">
+        <div class="newsletter-text">
+            <h2>📧 Підпишіться на розсилку</h2>
+            <p>Отримуйте новини про нові надходження, акції та догляд за кактусами прямо на пошту!</p>
+        </div>
+        <form method="post" action="{% url 'shop:newsletter_subscribe' %}" class="newsletter-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <div class="newsletter-fields">
+                {{ newsletter_form.name }}
+                {{ newsletter_form.email }}
+                <button type="submit" class="btn btn-newsletter">Підписатись</button>
+            </div>
+            {% if newsletter_form.name.errors %}
+                <span class="field-error">{{ newsletter_form.name.errors.0 }}</span>
+            {% endif %}
+            {% if newsletter_form.email.errors %}
+                <span class="field-error">{{ newsletter_form.email.errors.0 }}</span>
+            {% endif %}
+        </form>
+    </div>
+</section>
+
 {% endblock %}

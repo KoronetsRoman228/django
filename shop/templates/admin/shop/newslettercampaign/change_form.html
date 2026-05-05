@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+{% block submit_buttons_bottom %}
+  {{ block.super }}
+  {% if show_send_button and original and not original.is_sent %}
+  <div class="submit-row" style="background:#e8f5e9;border-top:2px solid #40916c;padding:12px 16px;">
+    <a href="{% url 'admin:shop_newslettercampaign_send' original.pk %}"
+       style="display:inline-block;background:#40916c;color:#fff;padding:10px 24px;border-radius:6px;font-weight:700;text-decoration:none;">
+      📤 Надіслати розсилку підписникам
+    </a>
+    <span style="margin-left:12px;font-size:.82rem;color:#2d6a4f;">Спочатку збережіть зміни, потім натискайте цю кнопку.</span>
+  </div>
+  {% endif %}
+  {% if original.is_sent %}
+  <div class="submit-row" style="background:#f0fdf4;padding:12px 16px;">
+    <span style="color:#166534;font-weight:600;">✅ Надіслано {{ original.recipients_count }} підписникам &mdash; {{ original.sent_at|date:"d.m.Y H:i" }}</span>
+  </div>
+  {% endif %}
+{% endblock %}
