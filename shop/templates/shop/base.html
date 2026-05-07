@@ -22,7 +22,7 @@
 
                 {% if categories %}
                 <li class="nav-categories">
-                    <a href="#">Категорії</a>
+                    <button type="button" class="nav-categories-toggle" aria-haspopup="true">Категорії</button>
                     <div class="dropdown">
                         {% for cat in categories %}
                             <a href="{% url 'shop:category' cat.slug %}">{{ cat.name }}</a>
