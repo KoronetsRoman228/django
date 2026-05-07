@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Підтвердження замовлення #{{ order.pk }} — КактусShop</title>
+<style>
+  body { margin:0; padding:0; background:#f5f0e8; font-family:'Segoe UI',Arial,sans-serif; }
+  .wrapper { max-width:600px; margin:40px auto; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.1); }
+  .header { background:linear-gradient(135deg,#2d6a4f,#40916c); padding:40px 40px 30px; text-align:center; }
+  .header h1 { margin:0; color:#fff; font-size:1.9rem; letter-spacing:.5px; }
+  .header p  { margin:8px 0 0; color:rgba(255,255,255,.85); font-size:1rem; }
+  .logo-icon { font-size:3rem; display:block; margin-bottom:10px; }
+  .body { padding:36px 40px; }
+  .body h2 { color:#2d6a4f; margin-top:0; }
+  .body p  { color:#444; line-height:1.7; }
+  .order-box { background:#f5f0e8; border-radius:10px; padding:20px 24px; margin:20px 0; }
+  .order-box h3 { margin:0 0 14px; color:#2d6a4f; font-size:1rem; text-transform:uppercase; letter-spacing:.5px; }
+  table { width:100%; border-collapse:collapse; }
+  table th { text-align:left; color:#888; font-size:.82rem; font-weight:600; padding-bottom:8px; border-bottom:1px solid #ddd; text-transform:uppercase; }
+  table td { padding:10px 0; border-bottom:1px solid #eee; color:#333; font-size:.95rem; vertical-align:top; }
+  table td.qty  { color:#888; width:60px; }
+  table td.price{ text-align:right; width:90px; font-weight:600; color:#2d6a4f; white-space:nowrap; }
+  .total-row td { border:none; padding-top:14px; font-size:1.05rem; font-weight:700; color:#1b4332; }
+  .total-row td.price { font-size:1.15rem; }
+  .highlight { background:#d8f3dc; border-left:4px solid #40916c; border-radius:6px; padding:16px 20px; margin:20px 0; }
+  .highlight p { margin:0; color:#1b4332; font-weight:500; }
+  .btn { display:inline-block; background:#40916c; color:#fff!important; text-decoration:none; padding:13px 32px; border-radius:50px; font-weight:700; font-size:1rem; margin:20px 0 8px; }
+  .footer { background:#2d6a4f; color:rgba(255,255,255,.75); padding:24px 40px; text-align:center; font-size:.82rem; }
+  .footer a { color:rgba(255,255,255,.9); }
+  .order-meta { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+  .meta-chip { background:#e9f5ee; border-radius:20px; padding:6px 14px; font-size:.85rem; color:#2d6a4f; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <span class="logo-icon">🌵</span>
+    <h1>КактусShop</h1>
+    <p>Підтвердження замовлення</p>
+  </div>
+
+  <div class="body">
+    <h2>Дякуємо за замовлення, {{ customer_name }}! 🎉</h2>
+    <p>Ваше замовлення успішно прийнято та буде опрацьовано найближчим часом. Нижче — деталі вашого замовлення.</p>
+
+    <div class="order-meta">
+      <span class="meta-chip">📦 Замовлення #{{ order.pk }}</span>
+      <span class="meta-chip">📅 {{ order.created_at|date:"d.m.Y H:i" }}</span>
+    </div>
+
+    <div class="order-box">
+      <h3>Склад замовлення</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Товар</th>
+            <th class="qty">Кількість</th>
+            <th class="price">Сума</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td class="qty">× {{ item.quantity }}</td>
+            <td class="price">{{ item.get_subtotal }} ₴</td>
+          </tr>
+          {% endfor %}
+          <tr class="total-row">
+            <td colspan="2"><strong>Разом до сплати</strong></td>
+            <td class="price">{{ order.get_total }} ₴</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight">
+      <p>✅ Ваше замовлення прийнято! Наш менеджер зв'яжеться з вами протягом 1–2 робочих годин для підтвердження деталей доставки.</p>
+    </div>
+
+    <p>Якщо у вас виникли питання — не соромтесь звертатись до нас:</p>
+    <p>📞 <strong>+380 67 123 45 67</strong><br>✉️ <strong><a href="mailto:info@cactus-shop.ua" style="color:#40916c;">info@cactus-shop.ua</a></strong></p>
+
+    <a href="http://127.0.0.1:8000/" class="btn">🌵 Продовжити покупки</a>
+
+    <p style="color:#888;font-size:.9rem;">З повагою,<br><strong>Команда КактусShop</strong></p>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 КактусShop · м. Київ, вул. Зелена, 42</p>
+    <p>📞 +380 67 123 45 67 · ✉️ info@cactus-shop.ua</p>
+  </div>
+
+</div>
+</body>
+</html>

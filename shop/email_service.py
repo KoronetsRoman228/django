@@ -40,6 +40,34 @@ def send_welcome_email(subscriber):
         return False
 
 
+def send_order_confirmation_email(order, email, customer_name=''):
+    """
+    Надсилає лист-підтвердження замовлення покупцю.
+    Викликається одразу після оформлення замовлення.
+    """
+    subject = f'🌵 КактусShop — підтвердження замовлення #{order.pk}'
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@cactus-shop.ua')
+
+    context = {
+        'order': order,
+        'customer_name': customer_name or email,
+    }
+
+    html_content = render_to_string('shop/emails/order_confirmation.html', context)
+    text_content = render_to_string('shop/emails/order_confirmation.txt', context)
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [email])
+    msg.attach_alternative(html_content, 'text/html')
+
+    try:
+        msg.send()
+        logger.info('Order confirmation email sent to %s (order #%s)', email, order.pk)
+        return True
+    except Exception as exc:
+        logger.error('Failed to send order confirmation to %s: %s', email, exc)
+        return False
+
+
 def send_campaign(campaign):
     """
     Надсилає кампанію всім активним підписникам.

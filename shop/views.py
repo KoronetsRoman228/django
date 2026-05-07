@@ -164,7 +164,19 @@ def cart_checkout(request):
         order.user = request.user
     order.is_completed = True
     order.save()
-    messages.success(request, 'Замовлення успішно оформлено! Дякуємо за покупку!')
+
+    # Надсилаємо лист-підтвердження замовлення
+    if request.user.is_authenticated and request.user.email:
+        from .email_service import send_order_confirmation_email
+        send_order_confirmation_email(
+            order=order,
+            email=request.user.email,
+            customer_name=request.user.get_full_name() or request.user.username,
+        )
+        messages.success(request, 'Замовлення успішно оформлено! Підтвердження надіслано на вашу пошту.')
+    else:
+        messages.success(request, 'Замовлення успішно оформлено! Дякуємо за покупку!')
+
     return redirect('shop:main')
 
 
