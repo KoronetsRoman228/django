@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseForbidden
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Avg
-from .models import Category, Product, Order, OrderItem, NewsletterSubscriber, ProductRating
+from .models import Category, Product, Customer, Order, OrderItem, NewsletterSubscriber, ProductRating
 from .forms import NewsletterForm, RatingForm, RegisterForm
 
 
@@ -124,12 +126,19 @@ def cart(request):
 
 def cart_add(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    if not product.available or product.stock == 0:
+        messages.error(request, 'Цей товар зараз недоступний для покупки.')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
     order = get_or_create_cart(request)
     item, created = OrderItem.objects.get_or_create(
         order=order, product=product,
         defaults={'price': product.price, 'quantity': 1}
     )
     if not created:
+        if item.quantity + 1 > product.stock:
+            messages.error(request, 'Немає достатньо товару на складі для збільшення кількості.')
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         item.quantity += 1
         item.save()
     messages.success(request, f'«{product.name}» додано до кошика!')
@@ -150,18 +159,22 @@ def cart_update(request, item_id):
     if qty < 1:
         item.delete()
     else:
-        item.quantity = qty
+        if qty > item.product.stock:
+            item.quantity = item.product.stock
+            messages.warning(request, 'Кількість була зменшена до максимально доступної на складі.')
+        else:
+            item.quantity = qty
         item.save()
     return redirect('shop:cart')
 
 
+@login_required(login_url='login')
 def cart_checkout(request):
     order = get_or_create_cart(request)
     if order.items.count() == 0:
         messages.error(request, 'Кошик порожній!')
         return redirect('shop:cart')
-    if request.user.is_authenticated:
-        order.user = request.user
+    order.user = request.user
     order.is_completed = True
     order.save()
 
@@ -232,4 +245,52 @@ def profile(request):
         'categories': categories,
         'orders': orders,
         'title': 'Особистий кабінет',
+    })
+
+
+@login_required
+def admin_user_list(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    categories = Category.objects.all()
+    users = User.objects.order_by('username').all()
+    customers = {customer.email: customer for customer in Customer.objects.all()}
+    for user_obj in users:
+        user_obj.customer = customers.get(user_obj.email)
+    return render(request, 'shop/user_list.html', {
+        'categories': categories,
+        'users': users,
+        'title': 'Користувачі сайту',
+    })
+
+
+@login_required
+def admin_user_detail(request, user_id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    categories = Category.objects.all()
+    user_obj = get_object_or_404(User, pk=user_id)
+    customer = Customer.objects.filter(email=user_obj.email).first()
+    orders = Order.objects.filter(user=user_obj, is_completed=True).order_by('-created_at')
+    return render(request, 'shop/user_detail.html', {
+        'categories': categories,
+        'user_obj': user_obj,
+        'customer': customer,
+        'orders': orders,
+        'title': f'Користувач: {user_obj.username}',
+    })
+
+
+@login_required
+def admin_order_detail(request, order_id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    categories = Category.objects.all()
+    order = get_object_or_404(Order, pk=order_id, is_completed=True)
+    customer = order.user and Customer.objects.filter(email=order.user.email).first()
+    return render(request, 'shop/order_detail.html', {
+        'categories': categories,
+        'order': order,
+        'customer': customer,
+        'title': f'Замовлення #{order.pk}',
     })

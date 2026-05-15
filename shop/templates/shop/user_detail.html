@@ -1,0 +1,47 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }} — КактусShop{% endblock %}
+
+{% block content %}
+<div class="admin-user-detail-page">
+    <h1>{{ title }}</h1>
+    <div class="user-detail-card">
+        <h2>{{ user_obj.username }}</h2>
+        <p><strong>Email:</strong> {{ user_obj.email }}</p>
+        <p><strong>Ім'я:</strong> {{ user_obj.first_name|default:'-' }}</p>
+        <p><strong>Прізвище:</strong> {{ user_obj.last_name|default:'-' }}</p>
+        <p><strong>Телефон:</strong> {{ customer.phone if customer else '-' }}</p>
+        <p><strong>Зареєстрований:</strong> {{ user_obj.date_joined|date:'d.m.Y H:i' }}</p>
+    </div>
+
+    <h2>Замовлення користувача</h2>
+    {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <h3><a href="{% url 'shop:admin_order_detail' order.pk %}">Замовлення #{{ order.pk }}</a></h3>
+                    <span class="order-date">{{ order.created_at|date:'d.m.Y H:i' }}</span>
+                </div>
+                <div class="order-items">
+                    {% for item in order.items.all %}
+                    <div class="order-item">
+                        <span>{{ item.product.name }}</span>
+                        <span>{{ item.quantity }} шт. × {{ item.price }} грн</span>
+                        <span>{{ item.get_subtotal }} грн</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="order-total">
+                    <strong>Загалом: {{ order.get_total }} грн</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Користувач ще не має завершених замовлень.</p>
+    {% endif %}
+
+    <a href="{% url 'shop:admin_user_list' %}" class="btn btn-outline">← Повернутись до списку користувачів</a>
+</div>
+{% endblock %}

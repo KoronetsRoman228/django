@@ -24,4 +24,7 @@ urlpatterns = [
     # Аутентифікація
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('staff/users/', views.admin_user_list, name='admin_user_list'),
+    path('staff/users/<int:user_id>/', views.admin_user_detail, name='admin_user_detail'),
+    path('staff/orders/<int:order_id>/', views.admin_order_detail, name='admin_order_detail'),
 ]

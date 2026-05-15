@@ -1,0 +1,39 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }} — КактусShop{% endblock %}
+
+{% block content %}
+<div class="admin-order-detail-page">
+    <h1>{{ title }}</h1>
+    <div class="order-detail-card">
+        <div class="order-meta">
+            <p><strong>Номер замовлення:</strong> {{ order.pk }}</p>
+            <p><strong>Дата:</strong> {{ order.created_at|date:'d.m.Y H:i' }}</p>
+            {% if order.user %}
+                <p><strong>Користувач:</strong> {{ order.user.username }}</p>
+                <p><strong>Email:</strong> {{ order.user.email }}</p>
+            {% else %}
+                <p><strong>Користувач:</strong> Гість</p>
+                <p><strong>Email:</strong> -</p>
+            {% endif %}
+            {% if customer and customer.phone %}
+                <p><strong>Телефон:</strong> {{ customer.phone }}</p>
+            {% else %}
+                <p><strong>Телефон:</strong> {{ order.get_customer_phone|default:'-' }}</p>
+            {% endif %}
+            <p><strong>Сума:</strong> {{ order.get_total }} грн</p>
+        </div>
+
+        <h2>Товари в замовленні</h2>
+        <div class="order-items">
+            {% for item in order.items.all %}
+            <div class="order-item">
+                <span>{{ item.product.name }}</span>
+                <span>{{ item.quantity }} шт. × {{ item.price }} грн</span>
+                <span>{{ item.get_subtotal }} грн</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -7,6 +7,9 @@
 <div class="profile-container">
     <h1>{{ title }}</h1>
     <p>Вітаємо, {{ user.username }}!</p>
+    {% if user.is_superuser %}
+        <p class="admin-note">Як адміністратор, ви бачите всі завершені замовлення на сайті.</p>
+    {% endif %}
 
     <h2>Ваші замовлення</h2>
     {% if orders %}
@@ -14,9 +17,25 @@
             {% for order in orders %}
             <div class="order-card">
                 <div class="order-header">
-                    <h3>Замовлення #{{ order.pk }}</h3>
+                    {% if user.is_superuser %}
+                        <h3><a href="{% url 'shop:admin_order_detail' order.pk %}">Замовлення #{{ order.pk }}</a></h3>
+                    {% else %}
+                        <h3>Замовлення #{{ order.pk }}</h3>
+                    {% endif %}
                     <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
                 </div>
+                {% if order.user %}
+                    <div class="order-meta">
+                        <strong>Покупець:</strong> {{ order.user.username }}{% if order.user.email %} ({{ order.user.email }}){% endif %}
+                        {% if order.get_customer_phone %}
+                            <br><strong>Телефон:</strong> {{ order.get_customer_phone }}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="order-meta">
+                        <strong>Покупець:</strong> гість
+                    </div>
+                {% endif %}
                 <div class="order-items">
                     {% for item in order.items.all %}
                     <div class="order-item">

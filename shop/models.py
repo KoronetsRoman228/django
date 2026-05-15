@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator
 
 
 class Category(models.Model):
@@ -29,7 +29,11 @@ class Product(models.Model):
     slug = models.SlugField('Слаг', unique=True)
     price = models.DecimalField('Ціна', max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField('Кількість на складі', default=0)
-    description = models.TextField('Опис товару', blank=True)
+    description = models.TextField(
+        'Опис товару',
+        blank=True,
+        validators=[MaxLengthValidator(2000)],
+    )
     image_url = models.URLField('Фото URL', blank=True)
     image = models.ImageField('Фото товару', upload_to='products/', blank=True, null=True)
     available = models.BooleanField('В наявності', default=True)
@@ -43,6 +47,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        if self.stock <= 0:
+            self.stock = 0
+            self.available = False
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        if self.stock <= 0:
+            self.stock = 0
+            self.available = False
+        super().save(*args, **kwargs)
 
 
 class Customer(models.Model):
@@ -87,6 +103,12 @@ class Order(models.Model):
 
     def get_total(self):
         return sum(item.get_subtotal() for item in self.items.all())
+
+    def get_customer_phone(self):
+        if self.user and self.user.email:
+            customer = Customer.objects.filter(email=self.user.email).first()
+            return customer.phone if customer else ''
+        return ''
 
     def get_total_items(self):
         return sum(item.quantity for item in self.items.all())

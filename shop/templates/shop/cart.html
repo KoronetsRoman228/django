@@ -63,12 +63,18 @@
                     <span>Разом:</span>
                     <span>{{ order.get_total }} грн</span>
                 </div>
-                <form method="post" action="{% url 'shop:cart_checkout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-block">
-                        ✅ Оформити замовлення
-                    </button>
-                </form>
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'shop:cart_checkout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-block">
+                            ✅ Оформити замовлення
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="cart-login-alert">
+                        <p>Щоб оформити замовлення, будь ласка, <a href="{% url 'login' %}?next={% url 'shop:cart' %}">увійдіть</a> або <a href="{% url 'shop:register' %}">зареєструйтесь</a>.</p>
+                    </div>
+                {% endif %}
                 <a href="{% url 'shop:main' %}" class="btn btn-outline btn-block" style="margin-top:.75rem;">
                     ← Продовжити покупки
                 </a>

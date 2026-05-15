@@ -1,0 +1,35 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }} — КактусShop{% endblock %}
+
+{% block content %}
+<div class="admin-users-page">
+    <h1>{{ title }}</h1>
+    <p>Тут адміністратор може переглянути список користувачів і перейти до їхніх даних.</p>
+
+    <div class="users-table-wrap">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Користувач</th>
+                    <th>Email</th>
+                    <th>Телефон</th>
+                    <th>Замовлень</th>
+                    <th>Деталі</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.customer.phone if user.customer else '-' }}</td>
+                    <td>{{ user.order_set.filter(is_completed=True).count }}</td>
+                    <td><a href="{% url 'shop:admin_user_detail' user.pk %}">Переглянути</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
